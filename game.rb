@@ -1,16 +1,4 @@
 require 'dxruby'
-# x = 0
-# y = 0
-# s = 0
-# t = 0
-#
-# Window.loop do
-#   x = x + Input.x  # x座標の更新
-#   y = y + Input.y  # y座標の更新
-#   t = (t + 3)
-#   Window.draw(x, y, image)  # data.pngを描画する
-#   Window.draw(s, t, image)
-# end
 
 class Fighter
 
@@ -27,10 +15,31 @@ class Fighter
   end
 end
 
-fighter = Fighter.new
-Window.loop do
-fighter.move(Input.x, Input.y)
+
+class Target
+
+  def initialize
+    @image = Image.new(80, 80, color=[255,255,0,0])
+  end
+
+  def arrangement
+    3.times {|n| Window.draw(500, 50 + n * 120, @image)}
+  end
 end
 
-# class Bullet
-# end
+class Bullet
+
+
+
+
+end
+
+
+
+
+fighter = Fighter.new
+target = Target.new
+Window.loop do
+  fighter.move(Input.x, Input.y)
+  target.arrangement
+end
