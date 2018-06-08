@@ -1,18 +1,14 @@
 require 'dxruby'
 
-class Game < Sprite
-  @@image1 = Image.load('glove.png')
-  @@image2 = Image.load('bat.png')
+class Glove < Sprite
+
   @@score = 0
   def initialize(x, y)
     super
     self.angle = rand * 360
-    self.image = @@image1
+    self.image = Image.load('glove.png')
     @x = x
     @y = y
-    @bx = x
-    @by = y
-    @flag = 0
     @limit_time = 10
     @start_time = Time.now
   end
@@ -34,57 +30,69 @@ class Game < Sprite
 
   def appearance(dx)
     move(dx)
-    Window.draw(@x, @y, @@image2)
+    Window.draw(@x, @y, Image.load('bat.png'))
   end
 
-  def ball(m)
-    move(Input.x)
-    if Input.key_push?(K_SPACE)
-      @flag = 1
-      @bx = @x
-      @by = @y
-    end
+  def score
+    Window.draw_font(0, 0, "#{@@score}", Font.new(32))
+  end
 
-    if @flag == 1
-    	@by -= 10
-      m.x, m.y = @bx, @by
-      m.draw
-    end
-
-    def score
-      Window.draw_font(0, 0, "#{@@score}", Font.new(32))
-    end
-
-    def time
-      now_time = Time.now
-	    diff_time = now_time - @start_time
-	    countdown = (@limit_time - diff_time).to_i
-	    Window.draw_font(0, 100, "#{countdown}", Font.new(32))
-      if countdown == 0
-        Window.loop do
-          Window.draw_font(110, 180, "Score:#{@@score}", Font.new(80))
-        end
+  def time
+    now_time = Time.now
+	  diff_time = now_time - @start_time
+	  countdown = (@limit_time - diff_time).to_i
+	  Window.draw_font(0, 100, "#{countdown}", Font.new(32))
+    if countdown == 0
+      Window.loop do
+        Window.draw_font(120, 180, "Score: #{@@score}", Font.new(80))
       end
     end
   end
 end
 
-s = []
-m = Sprite.new(0, 0, Image.load('ball.png'))
+
+class Ball < Sprite
+
+  def initialize(x, y)
+    super
+    @x = x
+    @y = y
+    @flag = 0
+    self.image = Image.load('ball.png')
+  end
+
+  def ball_move(x)
+    if Input.key_push?(K_SPACE)
+      @flag = 1
+      @y = 400
+      @x = x
+    end
+
+    if @flag == 1
+    	@y -= 10
+      self.x, self.y = @x, @y
+      self.draw
+    end
+  end
+end
+
+
+bat = Glove.new(0, 400)
+glove = []
+ball = Ball.new(0, 0)
 count = 15
 
-game = Game.new(0, 400)
 Window.loop do
   count -= 1
   if count == 0
     count = 15
-    s << Game.new(rand*540, -100)
+    glove << Glove.new(rand*540, -100)
   end
-  game.appearance(Input.x)
-  game.ball(m)
-  Sprite.update(s)
-  Sprite.check(m, s)
-  Sprite.draw(s)
-  game.score
-  game.time
+  bat.appearance(Input.x)
+  ball.ball_move(bat.move(Input.x))
+  Sprite.update(glove)
+  Sprite.check(ball, glove)
+  Sprite.draw(glove)
+  bat.score
+  bat.time
 end

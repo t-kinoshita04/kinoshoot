@@ -50,20 +50,20 @@ class Game < Sprite
       m.x, m.y = @bx, @by
       m.draw
     end
+  end
 
-    def score
-      Window.draw_font(0, 0, "#{@@score}", Font.new(32))
-    end
+  def score
+    Window.draw_font(0, 0, "#{@@score}", Font.new(32))
+  end
 
-    def time
-      now_time = Time.now
-	    diff_time = now_time - @start_time
-	    countdown = (@limit_time - diff_time).to_i
-	    Window.draw_font(0, 100, "#{countdown}", Font.new(32))
-      if countdown == 0
-        Window.loop do
-          Window.draw_font(110, 180, "Score:#{@@score}", Font.new(80))
-        end
+  def time
+    now_time = Time.now
+	  diff_time = now_time - @start_time
+	  countdown = (@limit_time - diff_time).to_i
+	  Window.draw_font(0, 100, "#{countdown}", Font.new(32))
+    if countdown == 0
+      Window.loop do
+        Window.draw_font(110, 180, "Score:#{@@score}", Font.new(80))
       end
     end
   end
