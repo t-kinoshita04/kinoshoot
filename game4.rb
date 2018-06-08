@@ -2,13 +2,12 @@ require 'dxruby'
 
 class Glove < Sprite
 
-  @@score = 0
+  $score = 0
+
   def initialize(x, y)
     super
     self.angle = rand * 360
     self.image = Image.load('glove.png')
-    @x = x
-    @y = y
     @limit_time = 10
     @start_time = Time.now
   end
@@ -20,8 +19,17 @@ class Glove < Sprite
 
   def hit
     if self.vanish
-      @@score += 10 * rand(1..10)
+      $score += 10 * rand(1..10)
     end
+  end
+end
+
+
+class Bat
+
+  def initialize(x, y)
+    @x = x
+    @y = y
   end
 
   def move(dx)
@@ -33,23 +41,7 @@ class Glove < Sprite
     Window.draw(@x, @y, Image.load('bat.png'))
   end
 
-  def score
-    Window.draw_font(0, 0, "#{@@score}", Font.new(32))
-  end
-
-  def time
-    now_time = Time.now
-	  diff_time = now_time - @start_time
-	  countdown = (@limit_time - diff_time).to_i
-	  Window.draw_font(0, 100, "#{countdown}", Font.new(32))
-    if countdown == 0
-      Window.loop do
-        Window.draw_font(120, 180, "Score: #{@@score}", Font.new(80))
-      end
-    end
-  end
 end
-
 
 class Ball < Sprite
 
@@ -77,10 +69,36 @@ class Ball < Sprite
 end
 
 
-bat = Glove.new(0, 400)
+class Result
+
+  def initialize
+    @limit_time = 10
+    @start_time = Time.now
+  end
+
+  def score
+    Window.draw_font(0, 0, "#{$score}", Font.new(32))
+  end
+
+  def time
+    now_time = Time.now
+	  diff_time = now_time - @start_time
+	  countdown = (@limit_time - diff_time).to_i
+	  Window.draw_font(0, 100, "#{countdown}", Font.new(32))
+    if countdown == 0
+      Window.loop do
+        Window.draw_font(120, 180, "Score: #{$score}", Font.new(80))
+      end
+    end
+  end
+end
+
+
 glove = []
-ball = Ball.new(0, 0)
 count = 15
+bat = Bat.new(0, 400)
+ball = Ball.new(0, 0)
+result = Result.new
 
 Window.loop do
   count -= 1
@@ -93,6 +111,6 @@ Window.loop do
   Sprite.update(glove)
   Sprite.check(ball, glove)
   Sprite.draw(glove)
-  bat.score
-  bat.time
+  result.score
+  result.time
 end
