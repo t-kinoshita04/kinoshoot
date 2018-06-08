@@ -32,12 +32,13 @@ class Bat
     @y = y
   end
 
-  def move(dx)
+  def move
+    dx = Input.x
     @x = @x + dx * 3
   end
 
-  def appearance(dx)
-    move(dx)
+  def appearance
+    move
     Window.draw(@x, @y, Image.load('bat.png'))
   end
 
@@ -106,11 +107,11 @@ Window.loop do
     count = 15
     glove << Glove.new(rand*540, -100)
   end
-  bat.appearance(Input.x)
-  ball.ball_move(bat.move(Input.x))
-  Sprite.update(glove)
-  Sprite.check(ball, glove)
-  Sprite.draw(glove)
+  bat.appearance
+  ball.ball_move(bat.move)
+  Glove.update(glove)
+  Glove.check(ball, glove)
+  Glove.draw(glove)
   result.score
   result.time
 end

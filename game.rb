@@ -59,7 +59,7 @@ class Bullet < Fighter
     	Window.draw(@bx, @by, @bullet)
     end
   end
-
+  # 当たり判定
   def hit
     3.times do |n|
       if @bx >= 450 && @bx <= 550 && @by >= 50 + n * 100 && @by <= 80 + n * 100
